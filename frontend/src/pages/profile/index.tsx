@@ -68,7 +68,7 @@ export default function ProfileEdit(): JSX.Element {
             profile,
           });
           setProfile(profile);
-        } catch (e) {
+        } catch (e: any) {
           setProfileState({
             status: ProfileStatus.Error,
             error: e.toString(),
@@ -99,7 +99,7 @@ export default function ProfileEdit(): JSX.Element {
         } as Profiles.v3.MsgSaveProfileEncodeObject], "auto");
         setShowProfileSaved(true);
         alert(`Profile saved:\nhttps://testnet.bigdipper.live/desmos/transactions/${response.transactionHash}`);
-      } catch (e) {
+      } catch (e: any) {
         console.error("Profile save error", e);
         setSaveProfileError(e.message);
         alert(e);

@@ -11,7 +11,7 @@ export default function Header(): JSX.Element {
   const [address, setAddress] = useState("");
   const router = useRouter();
 
-  const onForum = () => {router.push('/forum');};
+  const onThreads = () => {router.push('/threads');};
 
   const onConnect = useCallback(() => {
     if (signerStatus === SignerStatus.Connected) {
@@ -20,7 +20,7 @@ export default function Header(): JSX.Element {
       connect();
     }
     router.push('/profile');
-  }, [connect, disconnect, signerStatus]);
+  }, [connect, disconnect, signerStatus, router]);
 
   useEffect(() => {
     if (signer !== undefined && signerStatus === SignerStatus.Connected) {
@@ -30,13 +30,13 @@ export default function Header(): JSX.Element {
     } else {
       setAddress("");
     }
-  }, [signerStatus, signer])
+  }, [signerStatus, signer, router])
 
   return <AppBar position="static">
     <Toolbar>
-      <Button color="inherit" onClick={onForum}>
+      <Button color="inherit" onClick={onThreads}>
         <Typography variant="h6" sx={{ mr: 2 }}>
-          Demo Forum
+          Demo Threads
         </Typography>
       </Button>
       <Typography

@@ -19,7 +19,7 @@ import useSignerStatus from "../../hooks/useSignerStatus";
 import Long from "long";
 import { LoadingButton } from "@mui/lab";
 
-export default function Forum(): JSX.Element {
+export default function Threads(): JSX.Element {
   const signerStatus = useSignerStatus();
   const client = useDesmosClient();
   const { signer } = useSignerContext();

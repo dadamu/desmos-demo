@@ -30,7 +30,7 @@ export default function useDesmosClient(): DesmosClient | undefined {
         });
       }
     })()
-  }, [signerStatus])
+  }, [signerStatus, signer])
 
 
   return desmosClient;
