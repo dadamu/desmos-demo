@@ -28,7 +28,7 @@ export const SignerContextProvider: React.FC<Props> = ({children}) => {
   const connect = useCallback(async () => {
     const openloginAdapter = new OpenloginAdapter({
       adapterSettings: {
-        network: "testnet",
+        network: "cyan",
         uxMode: "popup",
         whiteLabel: {
           name: "Desmos DApp example",
