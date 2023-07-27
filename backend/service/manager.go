@@ -8,8 +8,7 @@ import (
 	cosmosclient "github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	"github.com/desmos-labs/cosmos-go-wallet/client"
 	wallettypes "github.com/desmos-labs/cosmos-go-wallet/types"
@@ -26,7 +25,6 @@ type ManagerClient struct {
 	mu       sync.Mutex
 
 	feegrantClient  feegrant.QueryClient
-	bankClient      banktypes.QueryClient
 	subspacesClient subspacestypes.QueryClient
 }
 
@@ -46,20 +44,19 @@ func NewManagerClient(txConfig cosmosclient.TxConfig, cdc codec.Codec) (*Manager
 		return nil, fmt.Errorf("error while creating cosmos wallet: %s", err)
 	}
 
-	sequence, err := GetAccountSequence(cdc, authtypes.NewQueryClient(walletClient.GRPCConn), wallet.AccAddress())
+	account, err := wallet.Client.GetAccount(wallet.AccAddress())
 	if err != nil {
 		return nil, err
 	}
 
 	return &ManagerClient{
 		Wallet:   wallet,
-		sequence: sequence,
+		sequence: account.GetSequence(),
 
 		subspaceID: cfg.SubspaceID,
 		groupID:    cfg.UserGroupID,
 
 		feegrantClient:  feegrant.NewQueryClient(walletClient.GRPCConn),
-		bankClient:      banktypes.NewQueryClient(walletClient.GRPCConn),
 		subspacesClient: subspacestypes.NewQueryClient(walletClient.GRPCConn),
 	}, nil
 }
@@ -82,23 +79,25 @@ func (c *ManagerClient) GrantFeePermission(address string, msgsTypes []string, a
 		return err
 	}
 
-	// Parse the addresses
-	granterAddress, err := c.Wallet.Client.ParseAddress(c.Wallet.AccAddress())
-	if err != nil {
-		return err
-	}
 	granteeAddress, err := c.Wallet.Client.ParseAddress(address)
 	if err != nil {
 		return err
 	}
 
 	// Build the message
-	feeGrantMsg, err := feegrant.NewMsgGrantAllowance(allowedMsgAllowance, granterAddress, granteeAddress)
+	feeGrantMsg, err := feegrant.NewMsgGrantAllowance(allowedMsgAllowance, subspacestypes.GetTreasuryAddress(c.subspaceID), granteeAddress)
 	if err != nil {
 		return err
 	}
 
-	return c.Broadcast(feeGrantMsg)
+	// Parse the addresses
+	executer, err := c.Wallet.Client.ParseAddress(c.Wallet.AccAddress())
+	if err != nil {
+		return err
+	}
+
+	execMsg := authz.NewMsgExec(executer, []sdk.Msg{feeGrantMsg})
+	return c.Broadcast(&execMsg)
 }
 
 func (c *ManagerClient) Broadcast(msg sdk.Msg) error {
