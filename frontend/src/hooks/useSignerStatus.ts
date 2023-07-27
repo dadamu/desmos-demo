@@ -7,6 +7,10 @@ export default function useSignerStatus() {
   const [signerStatus, setSignerStatus] = useState(!signer ? SignerStatus.NotConnected : signer.status);
 
   useEffect(() => {
+    if (signer?.status === signerStatus) {
+      return;
+    }
+
     if (signer === undefined ) {
       setSignerStatus(SignerStatus.NotConnected);
       return undefined;

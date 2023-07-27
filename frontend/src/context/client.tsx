@@ -15,14 +15,9 @@ interface Props {
 
 export const ClientContextProvider: React.FC<Props> = ({ children }) => {
   const [client, setDesmosClient] = useState<DesmosClient>();
-  const { signer, connect, disconnect } = useSignerContext();
-  const [ currentStatus, setCurrentStatus] = useState(signer?.status)
+  const { signer } = useSignerContext();
 
-  useEffect(() => {
-    if(currentStatus === signer?.status){
-      return;
-    }
-    
+   useEffect(() => {
     (async () => {
       if (signer !== undefined) {
         const client = await DesmosClient.connectWithSigner("https://rpc.morpheus.desmos.network:443", signer, {
@@ -34,8 +29,6 @@ export const ClientContextProvider: React.FC<Props> = ({ children }) => {
           }
           return client;
         })
-
-        setCurrentStatus(signer.status);
       } else {
         const client = await DesmosClient.connect("https://rpc.morpheus.desmos.network:443");
         setDesmosClient(old => {
@@ -45,8 +38,8 @@ export const ClientContextProvider: React.FC<Props> = ({ children }) => {
           return client;
         });
       }
-    })()
-  }, [signer, connect, disconnect])
+    })();
+  }, [signer?.status])
 
 
   return <ClientContext.Provider value={{ client }}>

@@ -17,13 +17,11 @@ import { GasPrice } from "@desmoslabs/desmjs";
 import { useClientContext } from "../../context/client";
 import { Post } from "../../components/Post";
 import { useSignerContext } from "../../context/signer";
-import useSignerStatus from "../../hooks/useSignerStatus";
 
 import Long from "long";
 import { LoadingButton } from "@mui/lab";
 
 export default function Threads(): JSX.Element {
-  const signerStatus = useSignerStatus();
   const { client } = useClientContext();
   const { signer } = useSignerContext();
   const router = useRouter();
@@ -91,7 +89,7 @@ export default function Threads(): JSX.Element {
     alignItems={"center"}
   >
     <List sx={{ minWidth: "70%", bgcolor: "background.paper", alignItems: "center" }}>
-      {signerStatus === SignerStatus.Connected &&
+      {signer?.status === SignerStatus.Connected &&
         <TextField
           multiline sx={{ m: 1 }}
           fullWidth label="create post"

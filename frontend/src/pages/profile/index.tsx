@@ -54,7 +54,7 @@ export default function ProfileEdit(): JSX.Element {
     if (signerStatus === SignerStatus.NotConnected) {
       setProfileState({status: ProfileStatus.None});
     }
-  }, [signerStatus, signer, signer?.status])
+  }, [signerStatus, signer])
 
   useEffect(() => {
     if (client !== undefined && signer !== undefined && signerStatus === SignerStatus.Connected) {
@@ -79,7 +79,7 @@ export default function ProfileEdit(): JSX.Element {
         }
       })()
     }
-  }, [client, signer, signerStatus])
+  }, [client, signerStatus])
 
   const saveProfile = useCallback(async () => {
     if (signer !== undefined && client !== undefined && profile !== null) {
@@ -171,7 +171,7 @@ export default function ProfileEdit(): JSX.Element {
             <LoadingButton
               variant={"contained"}
               onClick={saveProfile}
-              disabled={signer?.status !== SignerStatus.Connected}
+              disabled={signerStatus !== SignerStatus.Connected}
               loading={savingProfile}
             >
               Save profile
