@@ -10,6 +10,9 @@ import { SignerStatus } from "@desmoslabs/desmjs";
 import { ReplySetting } from "@desmoslabs/desmjs-types/desmos/posts/v3/models";
 import { Posts } from "@desmoslabs/desmjs";
 import { useRouter } from 'next/router'
+import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import { calculateFee } from "@cosmjs/stargate";
+import { GasPrice } from "@desmoslabs/desmjs";
 
 import useDesmosClient from "../../hooks/useDesmosClient";
 import { Post } from "../../components/Post";
@@ -46,9 +49,9 @@ export default function Threads(): JSX.Element {
   const createPost = async () => {
     const accounts = await signer!.getAccounts();
     const creator = accounts[0].address;
-    setCreatingPost(true)
+    setCreatingPost(true);
     try {
-      const res = await client!.signAndBroadcast(creator, [{
+      const msg = {
         typeUrl: Posts.v3.MsgCreatePostTypeUrl,
         value: {
           subspaceId: Long.fromValue(15),
@@ -62,8 +65,17 @@ export default function Threads(): JSX.Element {
           replySettings: ReplySetting.REPLY_SETTING_MUTUAL,
           referencedPosts: [],
         }
-      } as Posts.v3.MsgCreatePostEncodeObject], "auto");
-      alert(`Post created:\nhttps://testnet.bigdipper.live/desmos/transactions/${res.transactionHash}`)
+      } as Posts.v3.MsgCreatePostEncodeObject;
+
+      const gasEstimation = await client!.simulate(creator, [msg], "");
+      const fee = calculateFee( Math.round(gasEstimation * 2), GasPrice.fromString("0.2udaric"));
+      const tx = await client!.signTx(creator, [msg], {
+        fee,
+        feeGranter: "desmos16x504az4yyp20ptwmxn59qzxhwqyuekcrxy4qy",
+      });
+      const txBytes = TxRaw.encode(tx.txRaw).finish();
+      const response = await client!.broadcastTx(txBytes, client!.broadcastTimeoutMs, client!.broadcastPollIntervalMs);
+      alert(`Post created:\nhttps://testnet.bigdipper.live/desmos/transactions/${response.transactionHash}`)
       router.reload()
     } catch (e) {
       alert(e);

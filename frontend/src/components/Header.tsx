@@ -24,8 +24,16 @@ export default function Header(): JSX.Element {
 
   useEffect(() => {
     if (signer !== undefined && signerStatus === SignerStatus.Connected) {
-      signer.getAccounts().then(accounts => {
+      signer.getAccounts().then(async(accounts) => {
         setAddress(accounts[0].address);
+        
+        await fetch(process.env.NEXT_PUBLIC_APP_GRANT_SERVER_HOST! + "/grant", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ user: accounts[0].address })
+        }).catch((e: any) => console.error(e) )
       })
     } else {
       setAddress("");

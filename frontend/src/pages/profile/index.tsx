@@ -5,6 +5,9 @@ import {Profile} from "@desmoslabs/desmjs-types/desmos/profiles/v3/models_profil
 import Grid2 from "@mui/material/Unstable_Grid2";
 import {ProfileViewer} from "../../components/Profile";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import { calculateFee } from "@cosmjs/stargate";
+import { GasPrice } from "@desmoslabs/desmjs";
 
 import {useSignerContext} from "../../context/signer";
 import useSignerStatus from "../../hooks/useSignerStatus";
@@ -86,7 +89,8 @@ export default function ProfileEdit(): JSX.Element {
         setSaveProfileError(undefined);
         const accounts = await signer.getAccounts();
         const creator = accounts[0].address;
-        const response = await client.signAndBroadcast(creator, [{
+
+        const msg = {
           typeUrl: Profiles.v3.MsgSaveProfileTypeUrl,
           value: {
             dtag: profile.dtag,
@@ -96,7 +100,17 @@ export default function ProfileEdit(): JSX.Element {
             coverPicture: profile?.pictures?.cover ?? "",
             creator
           }
-        } as Profiles.v3.MsgSaveProfileEncodeObject], "auto");
+        } as Profiles.v3.MsgSaveProfileEncodeObject;
+
+        const gasEstimation = await client!.simulate(creator, [msg], "");
+        console.log(gasEstimation);
+        const fee = calculateFee( Math.round(gasEstimation * 2), GasPrice.fromString("0.2udaric"));
+        const tx = await client.signTx(creator, [msg], {
+          fee,
+          feeGranter: "desmos1xlw5ygfxw0z087nvmmksftxk4adc0hgkjyg9e0"
+        });
+        const txBytes = TxRaw.encode(tx.txRaw).finish();
+        const response = await client.broadcastTx(txBytes, client.broadcastTimeoutMs, client.broadcastPollIntervalMs);
         setShowProfileSaved(true);
         alert(`Profile saved:\nhttps://testnet.bigdipper.live/desmos/transactions/${response.transactionHash}`);
       } catch (e: any) {
