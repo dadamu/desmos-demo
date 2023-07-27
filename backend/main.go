@@ -46,7 +46,7 @@ func main() {
 	service.Register(router, service.NewHandler(client))
 
 	httpServer := &http.Server{
-		Addr:              fmt.Sprintf("%s:%s", "localhost", "3001"),
+		Addr:              fmt.Sprintf("%s:%s", "0.0.0.0", "3001"),
 		Handler:           router,
 		ReadHeaderTimeout: time.Minute,
 		ReadTimeout:       time.Minute,

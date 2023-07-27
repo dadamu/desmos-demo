@@ -40,8 +40,9 @@ func (h *Handler) AskGrant(c *gin.Context) {
 
 	if err := h.client.AddUserToGroup(req.User); err != nil {
 		log.Error().Err(err).Msg(fmt.Sprintf("Failed to add user %s to user group, raw logs: %s", req.User, err))
+	} else {
+		log.Info().Msg(fmt.Sprintf("Add user %s to user group successfully", req.User))
 	}
-	log.Info().Msg(fmt.Sprintf("Add user %s to user group successfully", req.User))
 
 	expiration := time.Now().Add(7 * 24 * time.Hour)
 
@@ -52,9 +53,9 @@ func (h *Handler) AskGrant(c *gin.Context) {
 
 	if err := h.client.GrantFeePermission(req.User, msgsTypes, nil, expiration); err != nil {
 		log.Error().Err(err).Msg(fmt.Sprintf("Failed to grant user %s fee allowance, raw logs: %s", req.User, err))
+	} else {
+		log.Info().Msg(fmt.Sprintf("Grant user %s fee allowance successfully", req.User))
 	}
-
-	log.Info().Msg(fmt.Sprintf("Grant user %s fee allowance successfully", req.User))
 
 	c.JSON(http.StatusOK, "")
 }
