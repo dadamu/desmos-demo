@@ -1,4 +1,4 @@
-FROM golang:1.20-alpine
+FROM golang:1.20-alpine As builder
 ARG arch=x86_64
 
 # Set up dependencies
@@ -26,7 +26,15 @@ ENV GIN_MODE=release
 
 # Set the entrypoint, so that the user can set the config using the CMD
 RUN BUILD_TAGS=muslc GOOS=linux GOARCH=amd64 LINK_STATICALLY=true make build
-RUN cp /code/build/desmos-demo /usr/bin/desmos-demo
+
+# Production image, copy all the files and run next
+FROM alpine:edge
+
+# Install ca-certificates
+RUN apk add --update ca-certificates
+
+# Copy over binaries from the build-env
+COPY --from=builder /code/build/desmos-demo /usr/bin/desmos-demo
 
 EXPOSE 3001
 
