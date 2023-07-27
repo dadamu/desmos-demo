@@ -2,7 +2,7 @@ import * as React from 'react';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import { useQuery } from 'react-query'
-import useDesmosClient from "../hooks/useDesmosClient";
+import { useClientContext } from "../context/client";
 
 export interface Props {
   user: string,
@@ -10,7 +10,7 @@ export interface Props {
 };
 
 export const Post: React.FC<Props> = ({ user, content }) => {
-  const client = useDesmosClient();
+  const { client } = useClientContext();
 
   const { data, isLoading, isError, isSuccess } = useQuery(
     `posts-${user}`,

@@ -14,7 +14,7 @@ import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { calculateFee } from "@cosmjs/stargate";
 import { GasPrice } from "@desmoslabs/desmjs";
 
-import useDesmosClient from "../../hooks/useDesmosClient";
+import { useClientContext } from "../../context/client";
 import { Post } from "../../components/Post";
 import { useSignerContext } from "../../context/signer";
 import useSignerStatus from "../../hooks/useSignerStatus";
@@ -24,18 +24,18 @@ import { LoadingButton } from "@mui/lab";
 
 export default function Threads(): JSX.Element {
   const signerStatus = useSignerStatus();
-  const client = useDesmosClient();
+  const { client } = useClientContext();
   const { signer } = useSignerContext();
   const router = useRouter();
   const [content, setContent] = useState("");
   const [creatingPost, setCreatingPost] = useState(false);
 
   const { data, isLoading, isError, isSuccess } = useQuery(
-    "profile",
+    "posts",
     async () => {
       return await client!.querier.postsV3.subspacePosts(Long.fromValue(15), {
         key: new Uint8Array(),
-        limit: Long.fromValue(20), 
+        limit: Long.fromValue(20),
         offset: Long.fromValue(0),
         reverse: true,
         countTotal: false
@@ -68,7 +68,7 @@ export default function Threads(): JSX.Element {
       } as Posts.v3.MsgCreatePostEncodeObject;
 
       const gasEstimation = await client!.simulate(creator, [msg], "");
-      const fee = calculateFee( Math.round(gasEstimation * 2), GasPrice.fromString("0.2udaric"));
+      const fee = calculateFee(Math.round(gasEstimation * 2), GasPrice.fromString("0.2udaric"));
       const tx = await client!.signTx(creator, [msg], {
         fee,
         feeGranter: "desmos16x504az4yyp20ptwmxn59qzxhwqyuekcrxy4qy",

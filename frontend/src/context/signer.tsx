@@ -1,4 +1,4 @@
-import {Signer, SigningMode, PrivateKey, PrivateKeySigner} from "@desmoslabs/desmjs";
+import {Signer, SigningMode, PrivateKeySigner} from "@desmoslabs/desmjs";
 import {OpenloginAdapter} from "@web3auth/openlogin-adapter";
 import React, {createContext, useCallback, useContext, useState} from "react";
 import {web3AuthSigner} from "../utils/keyprovider";

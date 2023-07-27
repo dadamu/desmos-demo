@@ -10,8 +10,8 @@ import { calculateFee } from "@cosmjs/stargate";
 import { GasPrice } from "@desmoslabs/desmjs";
 
 import {useSignerContext} from "../../context/signer";
+import {useClientContext} from "../../context/client";
 import useSignerStatus from "../../hooks/useSignerStatus";
-import useDesmosClient from "../../hooks/useDesmosClient";
 
 enum ProfileStatus {
   None,
@@ -43,7 +43,7 @@ type ProfileState = ProfileNone | ProfileFetching | ProfileFetchError | ProfileF
 export default function ProfileEdit(): JSX.Element {
   const {signer} = useSignerContext();
   const signerStatus = useSignerStatus();
-  const client = useDesmosClient();
+  const {client} = useClientContext();
   const [profileState, setProfileState] = useState<ProfileState>({status: ProfileStatus.None});
   const [profile, setProfile] = useState<Profile | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
