@@ -13,7 +13,7 @@ export const Post: React.FC<Props> = ({ user, content }) => {
   const client = useDesmosClient();
 
   const { data, isLoading, isError, isSuccess } = useQuery(
-    "posts",
+    `posts-${user}`,
     async () => {
       return await client!.querier.profilesV3.profile(user);
     },

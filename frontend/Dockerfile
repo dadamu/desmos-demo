@@ -13,7 +13,7 @@ COPY --from=deps /app/node_modules ./node_modules
 
 COPY . .
 
-RUN NEXT_PUBLIC_APP_WEB3AUTH_CLIENT_ID=NEXT_PUBLIC_APP_WEB3AUTH_CLIENT_ID yarn build
+RUN NEXT_PUBLIC_APP_WEB3AUTH_CLIENT_ID=NEXT_PUBLIC_APP_WEB3AUTH_CLIENT_ID NEXT_PUBLIC_APP_GRANT_SERVER_HOST=NEXT_PUBLIC_APP_GRANT_SERVER_HOST yarn build
 
 # Production image, copy all the files and run next
 FROM node:16-alpine AS runner

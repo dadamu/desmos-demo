@@ -107,7 +107,7 @@ export default function ProfileEdit(): JSX.Element {
         const fee = calculateFee( Math.round(gasEstimation * 2), GasPrice.fromString("0.2udaric"));
         const tx = await client.signTx(creator, [msg], {
           fee,
-          feeGranter: "desmos1xlw5ygfxw0z087nvmmksftxk4adc0hgkjyg9e0"
+          feeGranter: "desmos16x504az4yyp20ptwmxn59qzxhwqyuekcrxy4qy"
         });
         const txBytes = TxRaw.encode(tx.txRaw).finish();
         const response = await client.broadcastTx(txBytes, client.broadcastTimeoutMs, client.broadcastPollIntervalMs);
