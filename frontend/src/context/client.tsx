@@ -1,6 +1,8 @@
 import { DesmosClient, GasPrice } from "@desmoslabs/desmjs";
 import { createContext, useEffect, useContext, useState } from "react";
 import { useSignerContext } from "./signer";
+import useSignerStatus from "../hooks/useSignerStatus";
+
 
 export interface ClientContext {
   client?: DesmosClient
@@ -16,6 +18,7 @@ interface Props {
 export const ClientContextProvider: React.FC<Props> = ({ children }) => {
   const [client, setDesmosClient] = useState<DesmosClient>();
   const { signer } = useSignerContext();
+  const signerStatus = useSignerStatus();
 
    useEffect(() => {
     (async () => {
@@ -39,7 +42,7 @@ export const ClientContextProvider: React.FC<Props> = ({ children }) => {
         });
       }
     })();
-  }, [signer?.status])
+  }, [signerStatus])
 
 
   return <ClientContext.Provider value={{ client }}>

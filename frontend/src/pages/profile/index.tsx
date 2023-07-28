@@ -127,7 +127,7 @@ export default function ProfileEdit(): JSX.Element {
   const profileEditor = useMemo(() => {
     switch (profileState.status) {
       case ProfileStatus.None:
-        return <></>
+        return <>Please connect your wallet or refresh the page.</>
 
       case ProfileStatus.Fetching:
         return <>
@@ -186,7 +186,7 @@ export default function ProfileEdit(): JSX.Element {
           Fetch profile error {profileState.error}
         </Typography>
     }
-  }, [signer, profileState, saveProfile, savingProfile, saveProfileError])
+  }, [signerStatus, profileState, saveProfile, savingProfile, saveProfileError])
 
   return <Grid2
     sx={{m: 2}}
