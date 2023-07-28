@@ -11,15 +11,14 @@ export default function Header(): JSX.Element {
   const router = useRouter();
   const signerStatus = useSignerStatus();
 
-  const onThreads = () => { router.push('/threads'); };
+  const onThreads = () => { router.push("/threads"); };
 
   const onConnect = useCallback(() => {
-    if (signer?.status === SignerStatus.Connected) {
+    if (signerStatus === SignerStatus.Connected) {
       disconnect();
     } else {
-      connect();
+      connect().then(() => router.push("/profile"));
     }
-    router.push('/profile');
   }, [signerStatus]);
 
   useEffect(() => {

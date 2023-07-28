@@ -57,7 +57,7 @@ export default function ProfileEdit(): JSX.Element {
   }, [signerStatus])
 
   useEffect(() => {
-    if (client !== undefined && signer !== undefined && signerStatus === SignerStatus.Connected) {
+    if (client !== undefined && signerStatus === SignerStatus.Connected) {
       (async () => {
         try {
           setSaveProfileError(undefined);
