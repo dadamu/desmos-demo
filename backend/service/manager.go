@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
@@ -61,9 +62,37 @@ func NewManagerClient(txConfig cosmosclient.TxConfig, cdc codec.Codec) (*Manager
 	}, nil
 }
 
+func (c *ManagerClient) IsUserInGroup(address string) bool {
+	res, err := c.subspacesClient.UserPermissions(context.Background(), subspacestypes.NewQueryUserPermissionsRequest(c.subspaceID, 0, address))
+	if err != nil {
+		return false
+	}
+
+	for _, detail := range res.Details {
+		g := detail.GetGroup()
+		if g != nil && g.GroupID == c.groupID {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (c *ManagerClient) AddUserToGroup(address string) error {
 	msg := subspacestypes.NewMsgAddUserToUserGroup(c.subspaceID, c.groupID, address, c.Wallet.AccAddress())
 	return c.Broadcast(msg)
+}
+
+func (c *ManagerClient) HasFeeGrant(address string) bool {
+	res, err := c.feegrantClient.Allowance(context.Background(), &feegrant.QueryAllowanceRequest{
+		Granter: subspacestypes.GetTreasuryAddress(c.subspaceID).String(),
+		Grantee: address,
+	})
+	if err != nil {
+		return false
+	}
+
+	return res.Allowance != nil
 }
 
 func (c *ManagerClient) GrantFeePermission(address string, msgsTypes []string, amount sdk.Coins, expiration time.Time) error {
