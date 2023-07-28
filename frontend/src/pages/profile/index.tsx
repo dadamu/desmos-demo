@@ -54,7 +54,7 @@ export default function ProfileEdit(): JSX.Element {
     if (signerStatus === SignerStatus.NotConnected) {
       setProfileState({status: ProfileStatus.None});
     }
-  }, [signerStatus, signer])
+  }, [signerStatus])
 
   useEffect(() => {
     if (client !== undefined && signer !== undefined && signerStatus === SignerStatus.Connected) {
@@ -103,8 +103,7 @@ export default function ProfileEdit(): JSX.Element {
         } as Profiles.v3.MsgSaveProfileEncodeObject;
 
         const gasEstimation = await client!.simulate(creator, [msg], "");
-        console.log(gasEstimation);
-        const fee = calculateFee( Math.round(gasEstimation * 2), GasPrice.fromString("0.2udaric"));
+        const fee = calculateFee(Math.round(gasEstimation * 2), GasPrice.fromString("0.2udaric"));
         const tx = await client.signTx(creator, [msg], {
           fee,
           feeGranter: "desmos16x504az4yyp20ptwmxn59qzxhwqyuekcrxy4qy"

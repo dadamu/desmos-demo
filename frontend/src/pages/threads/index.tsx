@@ -88,7 +88,7 @@ export default function Threads(): JSX.Element {
     direction={"column"}
     alignItems={"center"}
   >
-    <List sx={{ minWidth: "70%", bgcolor: "background.paper", alignItems: "center" }}>
+    <List sx={{ minWidth: "85%", bgcolor: "background.paper", alignItems: "center" }}>
       {signer?.status === SignerStatus.Connected &&
         <TextField
           multiline sx={{ m: 1 }}
