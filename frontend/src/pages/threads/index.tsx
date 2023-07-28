@@ -33,7 +33,7 @@ export default function Threads(): JSX.Element {
     async () => {
       return await client!.querier.postsV3.subspacePosts(Long.fromValue(15), {
         key: new Uint8Array(),
-        limit: Long.fromValue(20),
+        limit: Long.fromValue(50),
         offset: Long.fromValue(0),
         reverse: true,
         countTotal: false
