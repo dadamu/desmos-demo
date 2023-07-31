@@ -1,0 +1,11 @@
+{
+  "name": "distributor",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@desmoslabs/desmjs": "^5.1.3",
+    "@desmoslabs/desmjs-types": "^5.1.3",
+    "dotenv": "^16.3.1"
+  }
+}
