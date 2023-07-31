@@ -36,6 +36,7 @@ func (h *Handler) AskGrant(c *gin.Context) {
 	_, err := sdk.AccAddressFromBech32(req.User)
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, fmt.Errorf("invalid Desmos address"))
+		return
 	}
 
 	// Rate limit once per 10s
