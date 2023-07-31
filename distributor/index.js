@@ -11,6 +11,7 @@ require('dotenv').config();
 
 const mnemonic = process.env.MNEMONIC_PHRASE;
 const tokenAmount = process.env.TOKEN_AMOUNT;
+const startPostID = process.env.START_POST_ID;
 
 async function* getTestnetPostIterator() {
     const client = await DesmosClient.connect("https://rpc.morpheus.desmos.network");
@@ -40,10 +41,10 @@ async function* getTestnetPostIterator() {
 function splitIntoGroups(array, size) {
     const result = [];
     for (let i = 0; i < array.length; i += size) {
-    result.push(array.slice(i, i + size));
+        result.push(array.slice(i, i + size));
     }
 
-  return result;
+    return result;
 }
 
 async function main() {
@@ -52,13 +53,13 @@ async function main() {
     const [signerAccount] = await signer.getAccounts();
     const client = await DesmosClient.connectWithSigner("https://rpc.mainnet.desmos.network", signer, {
         gasPrice: GasPrice.fromString("0.02udsm"),
-      });
+    });
 
     // Get post authors on testnet
     const authors = [];
     let iterator = getTestnetPostIterator()
     for (let post = (await iterator.next()).value; !!post; post = (await iterator.next()).value) {
-        if (post.id >= 0) authors.push(post.author);
+        if (post.id.gte(Long.fromString(startPostID))) authors.push(post.author);
     }
 
     // Build msgs
