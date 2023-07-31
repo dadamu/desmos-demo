@@ -10,6 +10,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/joho/godotenv v1.5.1
 	github.com/rs/zerolog v1.29.1
+	zgo.at/zcache/v2 v2.1.0
 )
 
 require (

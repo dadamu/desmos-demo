@@ -15,6 +15,7 @@ import (
 	wallettypes "github.com/desmos-labs/cosmos-go-wallet/types"
 	"github.com/desmos-labs/cosmos-go-wallet/wallet"
 	subspacestypes "github.com/desmos-labs/desmos/v5/x/subspaces/types"
+	"zgo.at/zcache/v2"
 )
 
 type ManagerClient struct {
@@ -24,6 +25,8 @@ type ManagerClient struct {
 
 	sequence uint64
 	mu       sync.Mutex
+
+	cache *zcache.Cache[string, bool]
 
 	queue           chan (sdk.Msg)
 	feegrantClient  feegrant.QueryClient
@@ -57,6 +60,8 @@ func NewManagerClient(txConfig cosmosclient.TxConfig, cdc codec.Codec) (*Manager
 
 		subspaceID: cfg.SubspaceID,
 		groupID:    cfg.UserGroupID,
+
+		cache: zcache.New[string, bool](10*time.Second, 10*time.Second),
 
 		queue:           make(chan sdk.Msg, 1000),
 		feegrantClient:  feegrant.NewQueryClient(walletClient.GRPCConn),
@@ -170,4 +175,13 @@ func (c *ManagerClient) Broadcast(msgs []sdk.Msg) error {
 
 	c.sequence += 1
 	return nil
+}
+
+func (c *ManagerClient) Cache(address string) {
+	c.cache.Set(address, true)
+}
+
+func (c *ManagerClient) Has(address string) bool {
+	_, found := c.cache.Get(address)
+	return found
 }

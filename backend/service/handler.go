@@ -38,6 +38,13 @@ func (h *Handler) AskGrant(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, fmt.Errorf("invalid Desmos address"))
 	}
 
+	if h.client.Has(req.User) {
+		c.JSON(http.StatusTooManyRequests, gin.H{
+			"message": "please wait 10 seconds",
+		})
+	}
+	h.client.Cache(req.User)
+
 	if !h.client.IsUserInGroup(req.User) {
 		h.client.AddUserToGroup(req.User)
 	}
