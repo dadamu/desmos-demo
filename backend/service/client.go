@@ -61,7 +61,7 @@ func NewManagerClient(txConfig cosmosclient.TxConfig, cdc codec.Codec) (*Manager
 		subspaceID: cfg.SubspaceID,
 		groupID:    cfg.UserGroupID,
 
-		cache: zcache.New[string, bool](10*time.Second, 10*time.Second),
+		cache: zcache.New[string, bool](10*time.Second, 2*time.Second),
 
 		queue:           make(chan sdk.Msg, 1000),
 		feegrantClient:  feegrant.NewQueryClient(walletClient.GRPCConn),

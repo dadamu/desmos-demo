@@ -38,10 +38,12 @@ func (h *Handler) AskGrant(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, fmt.Errorf("invalid Desmos address"))
 	}
 
+	// Rate limit once per 10s
 	if h.client.Has(req.User) {
 		c.JSON(http.StatusTooManyRequests, gin.H{
 			"message": "please wait 10 seconds",
 		})
+		return
 	}
 	h.client.Cache(req.User)
 
