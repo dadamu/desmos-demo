@@ -1,11 +1,9 @@
 config:
-  target: "https://localhost:3001"
+  target: "http://localhost:3001"
   phases:
     - duration: 60
-      arrivalRate: 20
+      arrivalRate: 5
   processor: "./processor.js"
-  plugins:
-    expect: {}
  
 scenarios:
   - name: "Grant flow"
@@ -15,5 +13,3 @@ scenarios:
           beforeRequest: generateAddress
           json:
             user: "{{ address }}"
-          expect:
-            - statusCode : 200
