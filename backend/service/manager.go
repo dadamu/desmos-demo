@@ -140,7 +140,7 @@ func (c *ManagerClient) Broadcast(msg sdk.Msg) error {
 		WithSequence(c.sequence)
 
 	// Broadcast the transaction
-	response, err := c.Wallet.BroadcastTxSync(txData)
+	response, err := c.Wallet.BroadcastTxAsync(txData)
 	if err != nil {
 		return err
 	}
