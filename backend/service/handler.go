@@ -39,11 +39,7 @@ func (h *Handler) AskGrant(c *gin.Context) {
 	}
 
 	if !h.client.IsUserInGroup(req.User) {
-		if err := h.client.AddUserToGroup(req.User); err != nil {
-			log.Error().Err(err).Msg(fmt.Sprintf("Failed to add user %s to user group, raw logs: %s", req.User, err))
-		} else {
-			log.Info().Msg(fmt.Sprintf("Add user %s to user group successfully", req.User))
-		}
+		h.client.AddUserToGroup(req.User)
 	}
 
 	if !h.client.HasFeeGrant(req.User) {
@@ -55,9 +51,7 @@ func (h *Handler) AskGrant(c *gin.Context) {
 		}
 
 		if err := h.client.GrantFeePermission(req.User, msgsTypes, nil, expiration); err != nil {
-			log.Error().Err(err).Msg(fmt.Sprintf("Failed to grant user %s fee allowance, raw logs: %s", req.User, err))
-		} else {
-			log.Info().Msg(fmt.Sprintf("Grant user %s fee allowance successfully", req.User))
+			log.Error().Err(err).Msg(fmt.Sprintf("Failed to add grant user %s fee allowance msg to queue, raw logs: %s", req.User, err))
 		}
 	}
 

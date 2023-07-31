@@ -388,8 +388,8 @@ github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ3
 github.com/cucumber/common/gherkin/go/v22 v22.0.0 h1:4K8NqptbvdOrjL9DEea6HFjSpbdT9+Q5kgLpmmsHYl0=
 github.com/cucumber/common/messages/go/v17 v17.1.1 h1:RNqopvIFyLWnKv0LfATh34SWBhXeoFTJnSrgm9cT/Ts=
 github.com/cyberdelia/templates v0.0.0-20141128023046-ca7fffd4298c/go.mod h1:GyV+0YP4qX0UQ7r2MoYZ+AvYDp12OF5yg4q8rGnyNh4=
-github.com/dadamu/cosmos-go-wallet v0.0.0-20230727102045-e5ab3824cc32 h1:fszevXeKxUOtbtRXs+2pnMjsFXqePcMmh/h16KkH4+E=
-github.com/dadamu/cosmos-go-wallet v0.0.0-20230727102045-e5ab3824cc32/go.mod h1:jeSjv8+FEhv+GK2c0L1czodAR5CbTNiY4NakWwS3Y2g=
+github.com/dadamu/cosmos-go-wallet v0.0.0-20230731134634-d7d9da0a1a0a h1:awJeVtIauM2MzS2AGn/wLy+0QkZA9fq890WG2fvH2lc=
+github.com/dadamu/cosmos-go-wallet v0.0.0-20230731134634-d7d9da0a1a0a/go.mod h1:jeSjv8+FEhv+GK2c0L1czodAR5CbTNiY4NakWwS3Y2g=
 github.com/danieljoos/wincred v1.1.2 h1:QLdCxFs1/Yl4zduvBdcHB8goaYk9RARS2SgLLRuAyr0=
 github.com/danieljoos/wincred v1.1.2/go.mod h1:GijpziifJoIBfYh+S7BbkdUTU4LfM+QnGqR5Vl2tAx0=
 github.com/dave/jennifer v1.2.0/go.mod h1:fIb+770HOpJ2fmN9EPPKOqm1vMGhB+TwXKMZhrIygKg=

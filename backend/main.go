@@ -43,6 +43,15 @@ func main() {
 		panic(err)
 	}
 
+	go func() {
+		for {
+			err := client.ConsumeMsgs()
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+	}()
+
 	service.Register(router, service.NewHandler(client))
 
 	httpServer := &http.Server{

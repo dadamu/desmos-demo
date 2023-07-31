@@ -198,7 +198,7 @@ replace (
 	// Our cosmos-sdk branch is: https://github.com/desmos-labs/cosmos-sdk v0.47.x-desmos
 	github.com/cosmos/cosmos-sdk => github.com/desmos-labs/cosmos-sdk v0.47.2-desmos
 
-	github.com/desmos-labs/cosmos-go-wallet => github.com/dadamu/cosmos-go-wallet v0.0.0-20230727102045-e5ab3824cc32
+	github.com/desmos-labs/cosmos-go-wallet => github.com/dadamu/cosmos-go-wallet v0.0.0-20230731134634-d7d9da0a1a0a
 
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 )

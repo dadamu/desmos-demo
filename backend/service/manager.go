@@ -25,6 +25,7 @@ type ManagerClient struct {
 	sequence uint64
 	mu       sync.Mutex
 
+	queue           chan (sdk.Msg)
 	feegrantClient  feegrant.QueryClient
 	subspacesClient subspacestypes.QueryClient
 }
@@ -57,6 +58,7 @@ func NewManagerClient(txConfig cosmosclient.TxConfig, cdc codec.Codec) (*Manager
 		subspaceID: cfg.SubspaceID,
 		groupID:    cfg.UserGroupID,
 
+		queue:           make(chan sdk.Msg, 1000),
 		feegrantClient:  feegrant.NewQueryClient(walletClient.GRPCConn),
 		subspacesClient: subspacestypes.NewQueryClient(walletClient.GRPCConn),
 	}, nil
@@ -78,9 +80,8 @@ func (c *ManagerClient) IsUserInGroup(address string) bool {
 	return false
 }
 
-func (c *ManagerClient) AddUserToGroup(address string) error {
-	msg := subspacestypes.NewMsgAddUserToUserGroup(c.subspaceID, c.groupID, address, c.Wallet.AccAddress())
-	return c.Broadcast(msg)
+func (c *ManagerClient) AddUserToGroup(address string) {
+	c.queue <- subspacestypes.NewMsgAddUserToUserGroup(c.subspaceID, c.groupID, address, c.Wallet.AccAddress())
 }
 
 func (c *ManagerClient) HasFeeGrant(address string) bool {
@@ -126,21 +127,38 @@ func (c *ManagerClient) GrantFeePermission(address string, msgsTypes []string, a
 	}
 
 	execMsg := authz.NewMsgExec(executer, []sdk.Msg{feeGrantMsg})
-	return c.Broadcast(&execMsg)
+	c.queue <- &execMsg
+	return nil
 }
 
-func (c *ManagerClient) Broadcast(msg sdk.Msg) error {
+func (c *ManagerClient) ConsumeMsgs() error {
+	var msgs []sdk.Msg
+	for msg := range c.queue {
+		if len(msgs) >= 10 || len(c.queue) == 0 {
+			break
+		}
+		msgs = append(msgs, msg)
+	}
+
+	if len(msgs) == 0 {
+		return nil
+	}
+
+	return c.Broadcast(msgs)
+}
+
+func (c *ManagerClient) Broadcast(msgs []sdk.Msg) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	// Build the transaction data
-	txData := wallettypes.NewTransactionData(msg).
+	txData := wallettypes.NewTransactionData(msgs...).
 		WithGasAuto().
 		WithFeeAuto().
 		WithSequence(c.sequence)
 
 	// Broadcast the transaction
-	response, err := c.Wallet.BroadcastTxAsync(txData)
+	response, err := c.Wallet.BroadcastTxSync(txData)
 	if err != nil {
 		return err
 	}
