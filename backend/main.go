@@ -44,7 +44,7 @@ func main() {
 	}
 
 	go func() {
-		for {
+		for range time.Tick(time.Second) {
 			err := client.ConsumeMsgs()
 			if err != nil {
 				fmt.Println(err)
