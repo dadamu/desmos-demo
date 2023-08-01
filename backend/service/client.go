@@ -139,10 +139,10 @@ func (c *ManagerClient) GrantFeePermission(address string, msgsTypes []string, a
 func (c *ManagerClient) ConsumeMsgs() error {
 	var msgs []sdk.Msg
 	for msg := range c.queue {
-		if len(msgs) >= 10 || len(c.queue) == 0 {
+		msgs = append(msgs, msg)
+		if len(msgs) >= 50 || len(c.queue) == 0 {
 			break
 		}
-		msgs = append(msgs, msg)
 	}
 
 	if len(msgs) == 0 {
